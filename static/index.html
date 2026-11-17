@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Wearden deck</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="player.js"></script>
+<style>
+  html,body{margin:0;height:100%;background:#f7faf8;overflow:hidden;font-family:Inter,system-ui,sans-serif}
+  hyperframes-player{position:absolute;inset:0}
+  #hud{position:fixed;right:18px;bottom:14px;display:flex;gap:10px;align-items:center;font:600 14px ui-monospace,monospace;color:#f3f6f4;opacity:.45;z-index:5;user-select:none}
+  #hud b{display:inline-block;padding:4px 10px;border:1px solid #2a3a33;border-radius:999px;background:#08100d}
+  #hint{position:fixed;left:18px;bottom:14px;font:500 13px system-ui;color:#9fb0a7;opacity:.0;transition:opacity .4s;z-index:5}
+  body:hover #hint{opacity:.6}
+</style></head>
+<body>
+<hyperframes-player id="p" src="composition/index.html"></hyperframes-player>
+<div id="hint">Space / → next · ← back · F fullscreen · Home / End</div>
+<div id="hud"><b id="ctr">1 / 11</b></div>
+<script>
+  const STARTS = [0,9,19,29,41,52,64,74,83,92,102,113,124,133];
+  const STOPS = [[5.4],[17.6],[27.4],[32.6,34.6,36.6,39.6],[45.4,47.6,50.6],[55.2,62.6],[72.4],[81.6],[90.6],[100.6],[111.6],[122.6],[131.6],[139.4]];
+  const p = document.getElementById("p"), ctr = document.getElementById("ctr");
+  let k = 0, j = 0, target = null, ready = false, mode = "held";
+
+  const label = () => (ctr.textContent = (k + 1) + " / " + STOPS.length);
+  function holdAt(t) { p.pause(); p.seek(t); target = null; mode = "held"; label(); }
+  function playTo(t) { target = t; mode = "playing"; label(); p.play(); }
+  function enter(newK) { k = newK; j = 0; p.seek(STARTS[k]); playTo(STOPS[k][0]); }
+  function next() {
+    if (!ready) return;
+    if (mode === "playing") return holdAt(target);          // skip the rest of the animation
+    if (j + 1 < STOPS[k].length) { j++; playTo(STOPS[k][j]); }
+    else if (k + 1 < STOPS.length) enter(k + 1);
+  }
+  function prev() {
+    if (!ready) return;
+    if (mode === "playing") { holdAt(target); return; }
+    if (j > 0) { j--; holdAt(STOPS[k][j]); }
+    else if (k > 0) { k--; j = STOPS[k].length - 1; holdAt(STOPS[k][j]); }
+  }
+  function goto(newK, last) { k = newK; j = last ? STOPS[k].length - 1 : 0; last ? holdAt(STOPS[k][j]) : enter(k); }
+
+  function tick() {
+    if (mode === "playing" && target != null && p.currentTime >= target - 0.02) holdAt(target);
+    requestAnimationFrame(tick);
+  }
+  p.addEventListener("ready", () => { if (ready) return; ready = true; enter(0); });
+  requestAnimationFrame(tick);
+  setTimeout(() => { if (!ready && p.ready) { ready = true; enter(0); } }, 4000);
+
+  addEventListener("keydown", (e) => {
+    if (["ArrowRight", "ArrowDown", " ", "PageDown", "Enter"].includes(e.key)) { e.preventDefault(); next(); }
+    else if (["ArrowLeft", "ArrowUp", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === "Home") goto(0, false);
+    else if (e.key === "End") goto(STOPS.length - 1, true);
+    else if (e.key === "f" || e.key === "F") { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
+  });
+  addEventListener("click", (e) => { (e.clientX > innerWidth * 0.3) ? next() : prev(); });
+  label();
+</script></body></html>

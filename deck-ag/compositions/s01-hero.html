@@ -1,0 +1,181 @@
+<template>
+<style>
+:root{--bg:#f7faf8;--em:#10b981;--em2:#047857;--em3:#065f46;--emd:#059669;--red:#dc2626;--red2:#dc2626;--tx:#0a0f0d;--mut:#33413b;--line:rgba(10,15,13,.12);--glass:rgba(255,255,255,.82);--font:"Inter",sans-serif;--mono:"JetBrains Mono",monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+#root{position:absolute;inset:0;overflow:hidden;background:#064e3b;color:var(--tx);font-family:var(--font)}
+.abs{position:absolute}
+#stage{position:absolute;inset:0;overflow:hidden;background:var(--bg)}
+.platebox{position:absolute;inset:0;overflow:hidden}
+.plate{position:absolute;left:-96px;top:-54px;width:2112px;height:1188px;object-fit:cover}
+.scrimL{position:absolute;inset:0;background:linear-gradient(90deg,rgba(247,250,248,.94) 0%,rgba(247,250,248,.72) 34%,rgba(247,250,248,.12) 66%,rgba(247,250,248,0) 100%)}
+.scrimB{position:absolute;inset:0;background:linear-gradient(0deg,rgba(247,250,248,.95) 0%,rgba(247,250,248,.55) 34%,rgba(247,250,248,0) 62%)}
+.scrimT{position:absolute;inset:0;background:linear-gradient(180deg,rgba(247,250,248,.85) 0%,rgba(247,250,248,.2) 40%,rgba(247,250,248,0) 60%)}
+.scrimC{position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 52%,rgba(247,250,248,.82) 0%,rgba(247,250,248,.35) 60%,rgba(247,250,248,.1) 100%)}
+.dim{position:absolute;inset:0;background:rgba(247,250,248,.55)}
+.parts{position:absolute;inset:0;overflow:hidden}
+.part{position:absolute;border-radius:50%;background:#10b981;box-shadow:none;opacity:0}
+.eyebrow{display:flex;align-items:center;gap:18px;font-family:var(--mono);font-size:26px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--em2)}
+.eyebrow i{display:block;width:56px;height:2px;background:currentColor;transform-origin:0 50%}
+.ln{display:block;overflow:hidden;padding:0 .02em .1em 0;margin-bottom:-.1em}
+.ln>span{display:inline-block}
+h1{font-weight:900;letter-spacing:-.05em;line-height:.92}
+h2{font-weight:700;font-size:92px;letter-spacing:-.045em;line-height:1.02}
+.em{color:var(--em2)}
+.red{color:var(--red2)}
+.sub{font-size:34px;line-height:1.35;color:var(--mut);font-weight:400}
+.glass{position:absolute;background:var(--glass);border:1px solid var(--line);border-radius:28px;box-shadow:0 30px 80px rgba(10,30,20,.10),inset 0 1px 0 rgba(255,255,255,.7);backdrop-filter:blur(14px)}
+.chip{display:inline-flex;align-items:center;gap:14px;padding:14px 24px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.88);font-size:28px;font-weight:600;color:var(--tx);white-space:nowrap}
+.chip b{width:12px;height:12px;border-radius:50%;background:var(--em);box-shadow:0 0 12px var(--em);display:block}
+.mono{font-family:var(--mono)}
+.ico{width:64px;height:64px;overflow:visible}
+.ico path{fill:none;stroke:var(--em2);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+/* HUD */
+.hud{position:absolute;inset:0;pointer-events:none;z-index:40}
+.hud .tl{text-shadow:0 0 10px #fff;position:absolute;left:96px;top:54px;display:flex;align-items:center;gap:16px;font-family:var(--mono);font-size:22px;letter-spacing:.2em;color:rgba(10,15,13,.72)}
+.hud .tl svg{width:20px;height:26px}
+.hud .tl em{font-style:normal;color:var(--em2)}
+.hud .tr{text-shadow:0 0 10px #fff,0 0 4px #fff;position:absolute;right:96px;top:54px;font-family:var(--mono);font-size:22px;letter-spacing:.2em;color:rgba(10,15,13,.5)}
+.hud .prog{position:absolute;left:96px;right:96px;bottom:46px;height:3px;background:rgba(10,15,13,.09);border-radius:2px;overflow:hidden}
+.hud .prog b{position:absolute;inset:0;background:linear-gradient(90deg,var(--emd),var(--em2));transform-origin:0 50%;box-shadow:0 0 14px var(--em)}
+/* transitions */
+#fl-line{position:absolute;left:0;top:539px;width:1920px;height:3px;background:var(--em2);box-shadow:0 0 30px 8px rgba(16,185,129,.7);transform-origin:50% 50%;opacity:0;z-index:50}
+#fl-bar{position:absolute;left:-4px;top:0;width:8px;height:1080px;background:var(--em2);box-shadow:0 0 50px 16px rgba(16,185,129,.65);opacity:0;z-index:50}
+#fl-ring{position:absolute;left:660px;top:240px;width:600px;height:600px;border-radius:50%;border:4px solid var(--em2);box-shadow:0 0 60px 10px rgba(16,185,129,.5),inset 0 0 60px 10px rgba(16,185,129,.4);opacity:0;z-index:50}
+/* browser */
+.persp{position:absolute;inset:0;perspective:2400px}
+.frame{position:absolute;overflow:hidden;border-radius:18px;background:#eef1ef;box-shadow:0 50px 120px rgba(10,30,20,.20),0 0 0 1px rgba(10,15,13,.09),0 0 140px rgba(16,185,129,.22)}
+.bar{position:absolute;left:0;top:0;right:0;height:46px;background:#eef1ef;display:flex;align-items:center;gap:10px;padding:0 18px;border-bottom:1px solid rgba(10,15,13,.08)}
+.bar i{width:13px;height:13px;border-radius:50%;display:block}
+.addr{margin-left:20px;width:520px;height:30px;border-radius:15px;background:rgba(10,15,13,.06);font-family:var(--mono);font-size:17px;color:#3b4a43;display:flex;align-items:center;gap:10px;padding:0 16px;white-space:nowrap;overflow:hidden}
+.addr svg{width:14px;height:14px;flex:none}
+.load{position:absolute;left:0;bottom:-1px;height:3px;width:100%;background:var(--em2);transform-origin:0 50%;box-shadow:0 0 10px var(--em)}
+.screen{position:absolute;left:0;right:0;top:46px;bottom:0;overflow:hidden;background:#fafafa}
+.skel{position:absolute;inset:0;background:#fafafa}
+.skel div{position:absolute;background:#ececec;border-radius:12px}
+.cam{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+.cam img.shot{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.hl{position:absolute;border:5px solid var(--em);border-radius:16px;box-shadow:0 0 0 10px rgba(16,185,129,.18),0 0 60px rgba(16,185,129,.45)}
+.cur{position:absolute;left:0;top:0;width:46px;height:46px;z-index:9}
+.ring{position:absolute;left:0;top:0;width:100px;height:100px;margin:-50px 0 0 -50px;border:5px solid var(--em);border-radius:50%;opacity:0;z-index:8}
+.call{display:flex;gap:20px;align-items:flex-start;padding:22px 0;border-top:1px solid var(--line)}
+.call .n{font-family:var(--mono);font-size:24px;color:var(--em2);padding-top:6px;flex:none}
+.call .t{font-size:32px;line-height:1.25;font-weight:600}
+.call .t small{display:block;font-size:24px;font-weight:400;color:var(--mut);margin-top:4px}
+</style>
+<div id="root" lang="az" data-composition-id="s01-hero" data-width="1920" data-height="1080">
+<div id="stage">
+<div class="platebox"><img id="plate" class="plate" src="assets/hfl/hero.jpg" alt="" /><div id="h-scan" class="abs" style="left:1240px;top:0;width:700px;height:4px;background:linear-gradient(90deg,transparent,#047857,transparent);box-shadow:0 0 40px 10px rgba(16,185,129,.55);opacity:0"></div></div><div class="scrimL"></div><div class="scrimB"></div><div id="parts" class="parts"></div>
+<div id="h-bars"><div id="h-bt" class="abs" style="left:0;top:0;width:1920px;height:150px;background:#0a0f0d;z-index:30"></div><div id="h-bb" class="abs" style="left:0;bottom:0;width:1920px;height:150px;background:#0a0f0d;z-index:30"></div></div>
+<div class="abs" style="left:150px;top:200px;width:1500px">
+  <div id="h-eye" class="eyebrow"><i></i><span>OYU CyberAI Hackathon 2026</span></div>
+  <div style="display:flex;align-items:flex-end;gap:40px;margin-top:40px">
+    <svg id="h-logo" viewBox="-10 -10 520 678" style="width:150px;height:197px;flex:none;overflow:visible"><path id="h-lp" pathLength="1" stroke-dasharray="1" d="M0 0H100V83H200V0H300V83H400V0H500V183H0ZM50 233H450V658H50Z" fill="#0a0f0d" fill-opacity="0" stroke="#059669" stroke-width="10"/></svg>
+    <h1 id="h-title" style="font-size:236px;white-space:nowrap"><span class="ln"><span>W</span><span>e</span><span>a</span><span>r</span><span>d</span><span>e</span><span>n</span></span></h1>
+  </div>
+  <div id="h-tag" style="margin-top:46px;font-size:76px;font-weight:700;letter-spacing:-.035em;line-height:1.05">
+    <span class="ln"><span>Skan et.</span> <span>Gücləndir.</span> <span class="em">Geri qaytar.</span></span>
+  </div>
+  <p id="h-sub" class="sub" style="margin-top:30px;width:900px;font-size:38px">Linux və Windows üçün agent əsaslı təhlükəsizlik gücləndirmə platforması: hər dəyişiklik geri qaytarıla bilər.</p>
+  <div id="h-chips" style="display:flex;gap:16px;margin-top:52px">
+    <span class="chip"><b></b>CIS standartları</span><span class="chip"><b></b>AI ilə prioritetləşdirmə</span><span class="chip"><b></b>MITRE ATT&amp;CK</span>
+  </div>
+</div>
+</div>
+
+<div class="hud">
+  <div class="tl"><svg viewBox="0 0 500 658"><path d="M0 0H100V83H200V0H300V83H400V0H500V183H0ZM50 233H450V658H50Z" fill="#0a0f0d"/></svg>WEARDEN <em>01 / 14</em> GİRİŞ</div>
+  <div class="tr">OYU CYBERAI HACKATHON 2026</div>
+  <div class="prog"><b></b></div>
+</div>
+<div id="fl-line"></div><div id="fl-bar"></div><div id="fl-ring"></div>
+</div>
+<script>
+
+const tl = gsap.timeline({ paused: true });
+const D = 9;
+function lines(sel, t, st = 0.1, dur = 1.1) {
+  tl.fromTo(sel + " .ln > span", { yPercent: 112, rotate: 2.5 }, { yPercent: 0, rotate: 0, duration: dur, ease: "expo.out", stagger: st }, t);
+}
+function rise(sel, t, dur = 0.9, dy = 40) {
+  tl.fromTo(sel, { opacity: 0, y: dy }, { opacity: 1, y: 0, duration: dur, ease: "expo.out" }, t);
+}
+function blurIn(sel, t, dur = 1.0, st = 0) {
+  tl.fromTo(sel, { opacity: 0, filter: "blur(16px)", y: 18 }, { opacity: 1, filter: "blur(0px)", y: 0, duration: dur, ease: "power3.out", stagger: st }, t);
+}
+function eyebrow(sel, t) {
+  tl.fromTo(sel + " i", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "expo.out" }, t);
+  tl.fromTo(sel + " span", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 1.1, ease: "expo.out" }, t + 0.1);
+}
+function kb(from, to, sel = "#plate") { tl.fromTo(sel, from, Object.assign({ duration: D, ease: "none" }, to), 0); }
+function outro(t = D - 0.75) {
+  tl.to("#stage", { scale: 1.07, opacity: 0, filter: "blur(14px)", duration: 0.7, ease: "power2.in" }, t);
+}
+function hud(i, n) {
+  tl.fromTo(".hud .tl, .hud .tr", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.9, ease: "expo.out", stagger: 0.1 }, 0.5);
+  tl.fromTo(".hud .prog b", { scaleX: (i - 1) / n }, { scaleX: i / n, duration: 1.4, ease: "expo.inOut" }, 0.6);
+}
+function count(sel, to, t, dur, o = {}) {
+  const el = document.querySelector(sel), obj = { v: o.from || 0 }, dec = o.dec || 0, pre = o.pre || "", suf = o.suf || "";
+  el.textContent = pre + (o.from || 0).toFixed(dec) + suf;
+  tl.fromTo(obj, { v: o.from || 0 }, { v: to, duration: dur, ease: o.ease || "power3.out", onUpdate: () => (el.textContent = pre + obj.v.toFixed(dec) + suf) }, t);
+}
+function typeText(sel, t, dur) {
+  const el = document.querySelector(sel), full = el.textContent, o = { n: 0 };
+  el.textContent = "";
+  tl.fromTo(o, { n: 0 }, { n: full.length, duration: dur, ease: "none", onUpdate: () => (el.textContent = full.slice(0, Math.round(o.n))) }, t);
+}
+function draw(sel, t, dur = 1, ease = "power2.inOut") { tl.fromTo(sel, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: dur, ease }, t); }
+function seeded(seed) { return () => { seed |= 0; seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function particles(n, seed, color) {
+  const host = document.querySelector("#parts"), r = seeded(seed);
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement("div"); p.className = "part";
+    const sz = 3 + r() * 6; p.style.width = p.style.height = sz + "px";
+    if (color) { p.style.background = color; p.style.boxShadow = "0 0 12px 2px " + color; }
+    p.style.left = r() * 1920 + "px"; p.style.top = 300 + r() * 900 + "px"; host.appendChild(p);
+    const dly = r() * 2.5, dur = D - dly;
+    tl.fromTo(p, { y: 0, x: 0 }, { y: -(260 + r() * 420), x: (r() - 0.5) * 160, duration: dur, ease: "none" }, dly);
+    tl.fromTo(p, { opacity: 0 }, { opacity: 0.12 + r() * 0.28, duration: 1.2, ease: "power1.out" }, dly);
+  }
+}
+// camera inside a browser screen of size fw x fh, looking at screenshot coords (cx, cy)
+function camAt(fw, fh, cx, cy, zoom) {
+  const s = (fw / 1920) * zoom;
+  let x = fw / 2 - cx * s, y = fh / 2 - cy * s;
+  x = Math.min(0, Math.max(fw - 1920 * s, x)); y = Math.min(0, Math.max(fh - 1080 * s, y));
+  return { x, y, scale: s };
+}
+function cam(sel, fw, fh, cx, cy, zoom, t, dur = 1.4) { tl.to(sel, Object.assign(camAt(fw, fh, cx, cy, zoom), { duration: dur, ease: "power3.inOut" }), t); }
+function hl(sel, t) {
+  tl.fromTo(sel, { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" }, t);
+}
+function hlOff(sel, t) { tl.to(sel, { opacity: 0, duration: 0.35 }, t); }
+function move(sel, x, y, t, dur = 0.9) { tl.to(sel, { x, y, duration: dur, ease: "power3.inOut" }, t); }
+function click(cur, ring, x, y, t, d = 0.6) {
+  tl.to(cur, { scale: 0.82, duration: 0.09, yoyo: true, repeat: 1, ease: "power1.inOut" }, t);
+  tl.set(ring, { x, y }, t);
+  tl.fromTo(ring, { scale: 0.2, opacity: 1 }, { scale: 1.6, opacity: 0, duration: d, ease: "power2.out" }, t);
+}
+
+tl.fromTo("#stage", { scale: 1.3, opacity: 0, filter: "blur(26px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 1.3, ease: "expo.out" }, 0);
+hud(1, 14);
+
+kb({ scale: 1.16, x: 70, y: 24, opacity: 0 }, { scale: 1.0, x: -30, y: 0, opacity: 1 });
+tl.fromTo("#h-bt", { yPercent: 0 }, { yPercent: -100, duration: 1.6, ease: "expo.inOut" }, 0.2);
+tl.fromTo("#h-bb", { yPercent: 0 }, { yPercent: 100, duration: 1.6, ease: "expo.inOut" }, 0.2);
+particles(34, 7);
+eyebrow("#h-eye", 0.7);
+draw("#h-lp", 0.7, 1.3, "power2.inOut");
+tl.fromTo("#h-lp", { fillOpacity: 0 }, { fillOpacity: 1, duration: 0.6, ease: "power2.out" }, 1.8);
+tl.fromTo("#h-title .ln > span", { yPercent: 115, rotateX: -70, opacity: 0 }, { yPercent: 0, rotateX: 0, opacity: 1, duration: 1.2, ease: "expo.out", stagger: 0.07 }, 1.0);
+tl.fromTo("#h-tag .ln > span", { yPercent: 115 }, { yPercent: 0, duration: 1.0, ease: "expo.out", stagger: 0.18 }, 2.1);
+blurIn("#h-sub", 2.9, 1.0);
+blurIn("#h-chips .chip", 3.4, 0.8, 0.14);
+tl.fromTo("#h-scan", { y: 80, opacity: 0 }, { y: 1000, opacity: 1, duration: 2.2, ease: "power1.inOut" }, 2.0);
+tl.to("#h-scan", { opacity: 0, duration: 0.4 }, 4.3);
+outro();
+
+window.__timelines = window.__timelines || {};
+window.__timelines["s01-hero"] = tl;
+</script>
+</template>

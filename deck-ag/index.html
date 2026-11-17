@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="az">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Wearden pitch</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #f7faf8; }
+    </style>
+  </head>
+  <body>
+    <script type="application/hyperframes-slideshow+json">
+{
+  "slides": [
+    {
+      "sceneId": "s01-hero",
+      "notes": "Wearden: agent-based security hardening for Linux and Windows. Scan, harden, roll back."
+    },
+    {
+      "sceneId": "s02-problem",
+      "notes": "Real scan of a fresh Ubuntu 24.04 host against a curated CIS Top 100: 12 of 100 checks fail. Manual hardening is slow and risky (lockout), so it rarely gets done."
+    },
+    {
+      "sceneId": "s03-solution",
+      "notes": "Agent scans read-only, core scores, AI ranks every failure, one-click hardening, every change reversible."
+    },
+    {
+      "sceneId": "s04-dashboard",
+      "notes": "Live dashboard: 89.5% average compliance, AI analysis (1 to fix, 11 to review), compliance trend.",
+      "fragments": [
+        32.6,
+        34.6,
+        36.6
+      ]
+    },
+    {
+      "sceneId": "s05-scan",
+      "notes": "One scan: 100 checks, 88 pass, 12 fail. AI decides fix / review / accept and ranks SSH root login first.",
+      "fragments": [
+        45.4,
+        47.6
+      ]
+    },
+    {
+      "sceneId": "s06-rollback",
+      "notes": "Every change is backed up first and re-checked afterwards. Roll back one control, a selection or a whole run.",
+      "fragments": [
+        55.2
+      ]
+    },
+    {
+      "sceneId": "s07-attack",
+      "notes": "ATT&CK coverage rises from 36 to 39 of 53 mapped techniques after hardening."
+    },
+    {
+      "sceneId": "s08-users",
+      "notes": "SMB IT teams, universities and public sector, MSSPs and pentesters. Ubuntu 22.04/24.04, Windows 10/11/Server 2022."
+    },
+    {
+      "sceneId": "s09-impact",
+      "notes": "Hours of manual CIS work become one reversible click. Proposed model: per-host SaaS, on-prem license, MSSP partners."
+    },
+    {
+      "sceneId": "s10-market",
+      "notes": "SPM market $26.6B (2025) to $53.3B (2030), 14.9% CAGR (MarketsandMarkets). Azerbaijan: cyber-incident losses expected to reach 40m AZN (report.az). Go-to-market: OYU pilot, Azerbaijani SMEs and banks, then MSSPs across the region."
+    },
+    {
+      "sceneId": "s11-compete",
+      "notes": "CalCom CHS hardens and rolls back but is enterprise, quote-only. CIS-CAT Pro and Nessus Pro only assess (Nessus Pro $4,790/yr). Wazuh SCA and OpenSCAP are free but fixes are manual and OpenSCAP remediation cannot be reverted automatically (Red Hat)."
+    },
+    {
+      "sceneId": "s12-revenue",
+      "notes": "Indicative pricing: free Community tier up to 5 hosts, Pro at $4 per host per month, Enterprise annual on-prem licence. 50 hosts = $2,400/yr vs Nessus Pro $4,790/yr for scanning only."
+    },
+    {
+      "sceneId": "s13-future",
+      "notes": "Next: runtime validation on real fleets, more benchmarks, health-checked auto-rollback."
+    },
+    {
+      "sceneId": "s14-close",
+      "notes": "H\u0259r hostu g\u00fccl\u0259ndir. H\u0259r d\u0259yi\u015fikliyi idar\u0259 et. Questions?"
+    }
+  ]
+}
+    </script>
+    <div id="root" data-composition-id="deck" data-start="0" data-duration="142" data-width="1920" data-height="1080">
+    <div id="s01-hero" class="clip" data-composition-id="s01-hero" data-composition-src="compositions/s01-hero.html" data-start="0" data-duration="9" data-track-index="1" data-track-kind="graphics" data-label="Giriş" data-width="1920" data-height="1080"></div>
+    <div id="s02-problem" class="clip" data-composition-id="s02-problem" data-composition-src="compositions/s02-problem.html" data-start="9" data-duration="10" data-track-index="2" data-track-kind="graphics" data-label="Problem" data-width="1920" data-height="1080"></div>
+    <div id="s03-solution" class="clip" data-composition-id="s03-solution" data-composition-src="compositions/s03-solution.html" data-start="19" data-duration="10" data-track-index="3" data-track-kind="graphics" data-label="Həll" data-width="1920" data-height="1080"></div>
+    <div id="s04-dashboard" class="clip" data-composition-id="s04-dashboard" data-composition-src="compositions/s04-dashboard.html" data-start="29" data-duration="12" data-track-index="4" data-track-kind="graphics" data-label="Panel" data-width="1920" data-height="1080"></div>
+    <div id="s05-scan" class="clip" data-composition-id="s05-scan" data-composition-src="compositions/s05-scan.html" data-start="41" data-duration="11" data-track-index="5" data-track-kind="graphics" data-label="Skan" data-width="1920" data-height="1080"></div>
+    <div id="s06-rollback" class="clip" data-composition-id="s06-rollback" data-composition-src="compositions/s06-rollback.html" data-start="52" data-duration="12" data-track-index="6" data-track-kind="graphics" data-label="Geri qaytarma" data-width="1920" data-height="1080"></div>
+    <div id="s07-attack" class="clip" data-composition-id="s07-attack" data-composition-src="compositions/s07-attack.html" data-start="64" data-duration="10" data-track-index="7" data-track-kind="graphics" data-label="ATT&amp;CK" data-width="1920" data-height="1080"></div>
+    <div id="s08-users" class="clip" data-composition-id="s08-users" data-composition-src="compositions/s08-users.html" data-start="74" data-duration="9" data-track-index="8" data-track-kind="graphics" data-label="İstifadəçilər" data-width="1920" data-height="1080"></div>
+    <div id="s09-impact" class="clip" data-composition-id="s09-impact" data-composition-src="compositions/s09-impact.html" data-start="83" data-duration="9" data-track-index="9" data-track-kind="graphics" data-label="Təsir" data-width="1920" data-height="1080"></div>
+    <div id="s10-market" class="clip" data-composition-id="s10-market" data-composition-src="compositions/s10-market.html" data-start="92" data-duration="10" data-track-index="10" data-track-kind="graphics" data-label="Bazar" data-width="1920" data-height="1080"></div>
+    <div id="s11-compete" class="clip" data-composition-id="s11-compete" data-composition-src="compositions/s11-compete.html" data-start="102" data-duration="11" data-track-index="11" data-track-kind="graphics" data-label="Rəqabət" data-width="1920" data-height="1080"></div>
+    <div id="s12-revenue" class="clip" data-composition-id="s12-revenue" data-composition-src="compositions/s12-revenue.html" data-start="113" data-duration="11" data-track-index="12" data-track-kind="graphics" data-label="Gəlir modeli" data-width="1920" data-height="1080"></div>
+    <div id="s13-future" class="clip" data-composition-id="s13-future" data-composition-src="compositions/s13-future.html" data-start="124" data-duration="9" data-track-index="13" data-track-kind="graphics" data-label="Gələcək" data-width="1920" data-height="1080"></div>
+    <div id="s14-close" class="clip" data-composition-id="s14-close" data-composition-src="compositions/s14-close.html" data-start="133" data-duration="9" data-track-index="14" data-track-kind="graphics" data-label="Təşəkkür" data-width="1920" data-height="1080"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.set({}, {}, 142);
+      window.__timelines["deck"] = tl;
+    </script>
+  </body>
+</html>

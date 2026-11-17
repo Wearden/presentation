@@ -1,0 +1,224 @@
+<template>
+<style>
+:root{--bg:#f7faf8;--em:#10b981;--em2:#047857;--em3:#065f46;--emd:#059669;--red:#dc2626;--red2:#dc2626;--tx:#0a0f0d;--mut:#33413b;--line:rgba(10,15,13,.12);--glass:rgba(255,255,255,.82);--font:"Inter",sans-serif;--mono:"JetBrains Mono",monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+#root{position:absolute;inset:0;overflow:hidden;background:#064e3b;color:var(--tx);font-family:var(--font)}
+.abs{position:absolute}
+#stage{position:absolute;inset:0;overflow:hidden;background:var(--bg)}
+.platebox{position:absolute;inset:0;overflow:hidden}
+.plate{position:absolute;left:-96px;top:-54px;width:2112px;height:1188px;object-fit:cover}
+.scrimL{position:absolute;inset:0;background:linear-gradient(90deg,rgba(247,250,248,.94) 0%,rgba(247,250,248,.72) 34%,rgba(247,250,248,.12) 66%,rgba(247,250,248,0) 100%)}
+.scrimB{position:absolute;inset:0;background:linear-gradient(0deg,rgba(247,250,248,.95) 0%,rgba(247,250,248,.55) 34%,rgba(247,250,248,0) 62%)}
+.scrimT{position:absolute;inset:0;background:linear-gradient(180deg,rgba(247,250,248,.85) 0%,rgba(247,250,248,.2) 40%,rgba(247,250,248,0) 60%)}
+.scrimC{position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 52%,rgba(247,250,248,.82) 0%,rgba(247,250,248,.35) 60%,rgba(247,250,248,.1) 100%)}
+.dim{position:absolute;inset:0;background:rgba(247,250,248,.55)}
+.parts{position:absolute;inset:0;overflow:hidden}
+.part{position:absolute;border-radius:50%;background:#10b981;box-shadow:none;opacity:0}
+.eyebrow{display:flex;align-items:center;gap:18px;font-family:var(--mono);font-size:26px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--em2)}
+.eyebrow i{display:block;width:56px;height:2px;background:currentColor;transform-origin:0 50%}
+.ln{display:block;overflow:hidden;padding:0 .02em .1em 0;margin-bottom:-.1em}
+.ln>span{display:inline-block}
+h1{font-weight:900;letter-spacing:-.05em;line-height:.92}
+h2{font-weight:700;font-size:92px;letter-spacing:-.045em;line-height:1.02}
+.em{color:var(--em2)}
+.red{color:var(--red2)}
+.sub{font-size:34px;line-height:1.35;color:var(--mut);font-weight:400}
+.glass{position:absolute;background:var(--glass);border:1px solid var(--line);border-radius:28px;box-shadow:0 30px 80px rgba(10,30,20,.10),inset 0 1px 0 rgba(255,255,255,.7);backdrop-filter:blur(14px)}
+.chip{display:inline-flex;align-items:center;gap:14px;padding:14px 24px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.88);font-size:28px;font-weight:600;color:var(--tx);white-space:nowrap}
+.chip b{width:12px;height:12px;border-radius:50%;background:var(--em);box-shadow:0 0 12px var(--em);display:block}
+.mono{font-family:var(--mono)}
+.ico{width:64px;height:64px;overflow:visible}
+.ico path{fill:none;stroke:var(--em2);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+/* HUD */
+.hud{position:absolute;inset:0;pointer-events:none;z-index:40}
+.hud .tl{text-shadow:0 0 10px #fff;position:absolute;left:96px;top:54px;display:flex;align-items:center;gap:16px;font-family:var(--mono);font-size:22px;letter-spacing:.2em;color:rgba(10,15,13,.72)}
+.hud .tl svg{width:20px;height:26px}
+.hud .tl em{font-style:normal;color:var(--em2)}
+.hud .tr{text-shadow:0 0 10px #fff,0 0 4px #fff;position:absolute;right:96px;top:54px;font-family:var(--mono);font-size:22px;letter-spacing:.2em;color:rgba(10,15,13,.5)}
+.hud .prog{position:absolute;left:96px;right:96px;bottom:46px;height:3px;background:rgba(10,15,13,.09);border-radius:2px;overflow:hidden}
+.hud .prog b{position:absolute;inset:0;background:linear-gradient(90deg,var(--emd),var(--em2));transform-origin:0 50%;box-shadow:0 0 14px var(--em)}
+/* transitions */
+#fl-line{position:absolute;left:0;top:539px;width:1920px;height:3px;background:var(--em2);box-shadow:0 0 30px 8px rgba(16,185,129,.7);transform-origin:50% 50%;opacity:0;z-index:50}
+#fl-bar{position:absolute;left:-4px;top:0;width:8px;height:1080px;background:var(--em2);box-shadow:0 0 50px 16px rgba(16,185,129,.65);opacity:0;z-index:50}
+#fl-ring{position:absolute;left:660px;top:240px;width:600px;height:600px;border-radius:50%;border:4px solid var(--em2);box-shadow:0 0 60px 10px rgba(16,185,129,.5),inset 0 0 60px 10px rgba(16,185,129,.4);opacity:0;z-index:50}
+/* browser */
+.persp{position:absolute;inset:0;perspective:2400px}
+.frame{position:absolute;overflow:hidden;border-radius:18px;background:#eef1ef;box-shadow:0 50px 120px rgba(10,30,20,.20),0 0 0 1px rgba(10,15,13,.09),0 0 140px rgba(16,185,129,.22)}
+.bar{position:absolute;left:0;top:0;right:0;height:46px;background:#eef1ef;display:flex;align-items:center;gap:10px;padding:0 18px;border-bottom:1px solid rgba(10,15,13,.08)}
+.bar i{width:13px;height:13px;border-radius:50%;display:block}
+.addr{margin-left:20px;width:520px;height:30px;border-radius:15px;background:rgba(10,15,13,.06);font-family:var(--mono);font-size:17px;color:#3b4a43;display:flex;align-items:center;gap:10px;padding:0 16px;white-space:nowrap;overflow:hidden}
+.addr svg{width:14px;height:14px;flex:none}
+.load{position:absolute;left:0;bottom:-1px;height:3px;width:100%;background:var(--em2);transform-origin:0 50%;box-shadow:0 0 10px var(--em)}
+.screen{position:absolute;left:0;right:0;top:46px;bottom:0;overflow:hidden;background:#fafafa}
+.skel{position:absolute;inset:0;background:#fafafa}
+.skel div{position:absolute;background:#ececec;border-radius:12px}
+.cam{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+.cam img.shot{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.hl{position:absolute;border:5px solid var(--em);border-radius:16px;box-shadow:0 0 0 10px rgba(16,185,129,.18),0 0 60px rgba(16,185,129,.45)}
+.cur{position:absolute;left:0;top:0;width:46px;height:46px;z-index:9}
+.ring{position:absolute;left:0;top:0;width:100px;height:100px;margin:-50px 0 0 -50px;border:5px solid var(--em);border-radius:50%;opacity:0;z-index:8}
+.call{display:flex;gap:20px;align-items:flex-start;padding:22px 0;border-top:1px solid var(--line)}
+.call .n{font-family:var(--mono);font-size:24px;color:var(--em2);padding-top:6px;flex:none}
+.call .t{font-size:32px;line-height:1.25;font-weight:600}
+.call .t small{display:block;font-size:24px;font-weight:400;color:var(--mut);margin-top:4px}
+</style>
+<div id="root" lang="az" data-composition-id="s06-rollback" data-width="1920" data-height="1080">
+<div id="stage">
+<div class="platebox"><img id="plate" class="plate" src="assets/hfl/rewind.jpg" alt="" /><div id="rb-flash" class="abs" style="inset:0;background:radial-gradient(circle at 73% 46%,#10b981 0%,rgba(16,185,129,.55) 30%,transparent 66%);opacity:0"></div></div><div class="scrimL"></div><div id="parts" class="parts"></div>
+<div id="rb-left" class="abs" style="left:96px;top:250px;width:760px">
+  <div id="rb-eye" class="eyebrow"><i></i><span>05 · Təhlükəsiz dizayn</span></div>
+  <h2 id="rb-h" style="margin-top:30px;font-size:80px"><span class="ln"><span>Hər dəyişiklik</span></span><span class="ln"><span class="em">geri qaytarılır.</span></span></h2>
+  <p id="rb-sub" class="sub" style="margin-top:30px;width:620px">Əvvəlcə ehtiyat nüsxə, sonra təkrar yoxlama. Bir nəzarəti, seçimi və ya bütün işi geri qaytarın.</p>
+</div>
+<div class="persp"><div id="rb-panel" class="abs" style="left:780px;top:190px;width:1060px;height:720px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 50px 120px rgba(10,30,20,.20),0 0 140px rgba(16,185,129,.25);color:#0a0a0a">
+  <div class="abs" style="left:30px;top:30px"><div style="font-size:15px;color:#737373;letter-spacing:.08em" class="mono">HARDENING / RUN DETAIL</div><div style="font-size:32px;font-weight:700;letter-spacing:-.02em;margin-top:8px">CIS Ubuntu 24.04 · 3 changes applied</div><div style="font-size:19px;color:#525252;margin-top:6px">Each applied change keeps its backup.</div></div>
+  <div class="abs" style="right:30px;top:44px;display:flex;gap:12px"><span style="padding:12px 20px;border:1px solid #d4d4d4;border-radius:10px;font-size:19px;font-weight:600">Roll back selected</span><span id="rb-btn" style="padding:12px 20px;background:#0a0a0a;color:#fff;border-radius:10px;font-size:19px;font-weight:600">Roll back all</span></div>
+  <div class="abs mono" style="left:0;top:196px;width:1060px;height:40px;display:flex;align-items:center;padding:0 30px;font-size:15px;color:#737373;letter-spacing:.08em;background:#fafafa;border-top:1px solid #e7e7e7"><span style="width:54px"></span><span style="width:330px">CONTROL</span><span style="width:210px">SETTING</span><span style="width:170px">BEFORE</span><span style="width:190px">CURRENT</span><span>STATUS</span></div>
+  <div id="rb-r0" class="abs" style="left:0;top:236px;width:1060px;height:104px;border-top:1px solid #e7e7e7;display:flex;align-items:center;padding:0 30px;font-size:22px;color:#0a0a0a">
+  <div style="width:30px;height:30px;border-radius:7px;border:2px solid #cfcfcf;position:relative;flex:none"><div id="rb-k0" class="abs" style="inset:-2px;border-radius:7px;background:#0a0a0a;opacity:0"><svg viewBox="0 0 24 24" style="width:100%;height:100%"><path d="M6 12.5l4 4L18 8" stroke="#fff" stroke-width="3" fill="none"/></svg></div></div>
+  <div style="width:330px;margin-left:24px"><div class="mono" style="font-size:19px;font-weight:700">LNX-SSH-007</div><div style="color:#525252;margin-top:4px;font-size:20px">Root login over SSH</div></div>
+  <div class="mono" style="width:210px;font-size:18px;color:#525252">PermitRootLogin</div>
+  <div class="mono" style="width:170px;font-size:19px">yes</div>
+  <div style="width:190px;position:relative;height:40px"><span id="rb-a0" class="mono abs" style="left:0;top:8px;font-size:19px;white-space:nowrap">no</span><span id="rb-b0" class="mono abs" style="left:0;top:8px;font-size:19px;color:#047857;font-weight:700;opacity:0">yes</span></div>
+  <div style="position:relative;width:150px;height:40px"><span id="rb-s0" class="abs" style="left:0;top:2px;padding:6px 14px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:18px;font-weight:600;white-space:nowrap">applied</span><span id="rb-t0" class="abs" style="left:0;top:2px;padding:6px 14px;border-radius:999px;background:#0a0a0a;color:#fff;font-size:18px;font-weight:600;white-space:nowrap;opacity:0">↺ restored</span></div>
+</div><div id="rb-r1" class="abs" style="left:0;top:340px;width:1060px;height:104px;border-top:1px solid #e7e7e7;display:flex;align-items:center;padding:0 30px;font-size:22px;color:#0a0a0a">
+  <div style="width:30px;height:30px;border-radius:7px;border:2px solid #cfcfcf;position:relative;flex:none"><div id="rb-k1" class="abs" style="inset:-2px;border-radius:7px;background:#0a0a0a;opacity:0"><svg viewBox="0 0 24 24" style="width:100%;height:100%"><path d="M6 12.5l4 4L18 8" stroke="#fff" stroke-width="3" fill="none"/></svg></div></div>
+  <div style="width:330px;margin-left:24px"><div class="mono" style="font-size:19px;font-weight:700">LNX-NET-015</div><div style="color:#525252;margin-top:4px;font-size:20px">Core dumps for set-id programs</div></div>
+  <div class="mono" style="width:210px;font-size:18px;color:#525252">fs.suid_dumpable</div>
+  <div class="mono" style="width:170px;font-size:19px">2</div>
+  <div style="width:190px;position:relative;height:40px"><span id="rb-a1" class="mono abs" style="left:0;top:8px;font-size:19px;white-space:nowrap">0</span><span id="rb-b1" class="mono abs" style="left:0;top:8px;font-size:19px;color:#047857;font-weight:700;opacity:0">2</span></div>
+  <div style="position:relative;width:150px;height:40px"><span id="rb-s1" class="abs" style="left:0;top:2px;padding:6px 14px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:18px;font-weight:600;white-space:nowrap">applied</span><span id="rb-t1" class="abs" style="left:0;top:2px;padding:6px 14px;border-radius:999px;background:#0a0a0a;color:#fff;font-size:18px;font-weight:600;white-space:nowrap;opacity:0">↺ restored</span></div>
+</div><div id="rb-r2" class="abs" style="left:0;top:444px;width:1060px;height:104px;border-top:1px solid #e7e7e7;display:flex;align-items:center;padding:0 30px;font-size:22px;color:#0a0a0a">
+  <div style="width:30px;height:30px;border-radius:7px;border:2px solid #cfcfcf;position:relative;flex:none"><div id="rb-k2" class="abs" style="inset:-2px;border-radius:7px;background:#0a0a0a;opacity:0"><svg viewBox="0 0 24 24" style="width:100%;height:100%"><path d="M6 12.5l4 4L18 8" stroke="#fff" stroke-width="3" fill="none"/></svg></div></div>
+  <div style="width:330px;margin-left:24px"><div class="mono" style="font-size:19px;font-weight:700">LNX-FS-009</div><div style="color:#525252;margin-top:4px;font-size:20px">nodev, nosuid, noexec on /tmp</div></div>
+  <div class="mono" style="width:210px;font-size:18px;color:#525252">/tmp mount options</div>
+  <div class="mono" style="width:170px;font-size:19px">defaults</div>
+  <div style="width:190px;position:relative;height:40px"><span id="rb-a2" class="mono abs" style="left:0;top:8px;font-size:19px;white-space:nowrap">nodev,nosui…</span><span id="rb-b2" class="mono abs" style="left:0;top:8px;font-size:19px;color:#047857;font-weight:700;opacity:0">defaults</span></div>
+  <div style="position:relative;width:150px;height:40px"><span id="rb-s2" class="abs" style="left:0;top:2px;padding:6px 14px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:18px;font-weight:600;white-space:nowrap">applied</span><span id="rb-t2" class="abs" style="left:0;top:2px;padding:6px 14px;border-radius:999px;background:#0a0a0a;color:#fff;font-size:18px;font-weight:600;white-space:nowrap;opacity:0">↺ restored</span></div>
+</div>
+  <div id="rb-foot" class="abs" style="left:30px;top:572px;width:1000px;padding:20px 24px;border-radius:14px;background:#ecfdf5;border:1px solid #047857;display:flex;gap:16px;align-items:center;font-size:21px;color:#065f46;opacity:0"><svg viewBox="0 0 24 24" style="width:30px;height:30px;flex:none"><circle cx="12" cy="12" r="11" fill="#10b981"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2.6" fill="none"/></svg><span><b>3 changes restored.</b> Each check re-ran after the rollback; the full report is exportable.</span></div>
+  <div id="rb-modal" class="abs" style="left:270px;top:250px;width:520px;padding:28px;border-radius:16px;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.35);border:1px solid #e5e5e5;opacity:0"><div style="font-size:24px;font-weight:700">Roll back every applied change in this run?</div><div style="display:flex;justify-content:flex-end;gap:12px;margin-top:24px"><span style="padding:10px 18px;border:1px solid #d4d4d4;border-radius:10px;font-size:18px">Cancel</span><span style="padding:10px 18px;background:#0a0a0a;color:#fff;border-radius:10px;font-size:18px;font-weight:600">Roll back</span></div></div>
+  <div id="rb-cur" class="cur"><svg viewBox="0 0 24 24"><path d="M3 2l7 18 2.6-7.4L20 10z" fill="#fff" stroke="#0a0a0a" stroke-width="1.5" stroke-linejoin="round"/></svg></div><div id="rb-ring" class="ring"></div>
+</div></div>
+</div>
+
+<div class="hud">
+  <div class="tl"><svg viewBox="0 0 500 658"><path d="M0 0H100V83H200V0H300V83H400V0H500V183H0ZM50 233H450V658H50Z" fill="#0a0f0d"/></svg>WEARDEN <em>06 / 14</em> GERİ QAYTARMA</div>
+  <div class="tr">OYU CYBERAI HACKATHON 2026</div>
+  <div class="prog"><b></b></div>
+</div>
+<div id="fl-line"></div><div id="fl-bar"></div><div id="fl-ring"></div>
+</div>
+<script>
+
+const tl = gsap.timeline({ paused: true });
+const D = 12;
+function lines(sel, t, st = 0.1, dur = 1.1) {
+  tl.fromTo(sel + " .ln > span", { yPercent: 112, rotate: 2.5 }, { yPercent: 0, rotate: 0, duration: dur, ease: "expo.out", stagger: st }, t);
+}
+function rise(sel, t, dur = 0.9, dy = 40) {
+  tl.fromTo(sel, { opacity: 0, y: dy }, { opacity: 1, y: 0, duration: dur, ease: "expo.out" }, t);
+}
+function blurIn(sel, t, dur = 1.0, st = 0) {
+  tl.fromTo(sel, { opacity: 0, filter: "blur(16px)", y: 18 }, { opacity: 1, filter: "blur(0px)", y: 0, duration: dur, ease: "power3.out", stagger: st }, t);
+}
+function eyebrow(sel, t) {
+  tl.fromTo(sel + " i", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "expo.out" }, t);
+  tl.fromTo(sel + " span", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 1.1, ease: "expo.out" }, t + 0.1);
+}
+function kb(from, to, sel = "#plate") { tl.fromTo(sel, from, Object.assign({ duration: D, ease: "none" }, to), 0); }
+function outro(t = D - 0.75) {
+  tl.to("#stage", { scale: 1.07, opacity: 0, filter: "blur(14px)", duration: 0.7, ease: "power2.in" }, t);
+}
+function hud(i, n) {
+  tl.fromTo(".hud .tl, .hud .tr", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.9, ease: "expo.out", stagger: 0.1 }, 0.5);
+  tl.fromTo(".hud .prog b", { scaleX: (i - 1) / n }, { scaleX: i / n, duration: 1.4, ease: "expo.inOut" }, 0.6);
+}
+function count(sel, to, t, dur, o = {}) {
+  const el = document.querySelector(sel), obj = { v: o.from || 0 }, dec = o.dec || 0, pre = o.pre || "", suf = o.suf || "";
+  el.textContent = pre + (o.from || 0).toFixed(dec) + suf;
+  tl.fromTo(obj, { v: o.from || 0 }, { v: to, duration: dur, ease: o.ease || "power3.out", onUpdate: () => (el.textContent = pre + obj.v.toFixed(dec) + suf) }, t);
+}
+function typeText(sel, t, dur) {
+  const el = document.querySelector(sel), full = el.textContent, o = { n: 0 };
+  el.textContent = "";
+  tl.fromTo(o, { n: 0 }, { n: full.length, duration: dur, ease: "none", onUpdate: () => (el.textContent = full.slice(0, Math.round(o.n))) }, t);
+}
+function draw(sel, t, dur = 1, ease = "power2.inOut") { tl.fromTo(sel, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: dur, ease }, t); }
+function seeded(seed) { return () => { seed |= 0; seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function particles(n, seed, color) {
+  const host = document.querySelector("#parts"), r = seeded(seed);
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement("div"); p.className = "part";
+    const sz = 3 + r() * 6; p.style.width = p.style.height = sz + "px";
+    if (color) { p.style.background = color; p.style.boxShadow = "0 0 12px 2px " + color; }
+    p.style.left = r() * 1920 + "px"; p.style.top = 300 + r() * 900 + "px"; host.appendChild(p);
+    const dly = r() * 2.5, dur = D - dly;
+    tl.fromTo(p, { y: 0, x: 0 }, { y: -(260 + r() * 420), x: (r() - 0.5) * 160, duration: dur, ease: "none" }, dly);
+    tl.fromTo(p, { opacity: 0 }, { opacity: 0.12 + r() * 0.28, duration: 1.2, ease: "power1.out" }, dly);
+  }
+}
+// camera inside a browser screen of size fw x fh, looking at screenshot coords (cx, cy)
+function camAt(fw, fh, cx, cy, zoom) {
+  const s = (fw / 1920) * zoom;
+  let x = fw / 2 - cx * s, y = fh / 2 - cy * s;
+  x = Math.min(0, Math.max(fw - 1920 * s, x)); y = Math.min(0, Math.max(fh - 1080 * s, y));
+  return { x, y, scale: s };
+}
+function cam(sel, fw, fh, cx, cy, zoom, t, dur = 1.4) { tl.to(sel, Object.assign(camAt(fw, fh, cx, cy, zoom), { duration: dur, ease: "power3.inOut" }), t); }
+function hl(sel, t) {
+  tl.fromTo(sel, { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 0.6, ease: "expo.out" }, t);
+}
+function hlOff(sel, t) { tl.to(sel, { opacity: 0, duration: 0.35 }, t); }
+function move(sel, x, y, t, dur = 0.9) { tl.to(sel, { x, y, duration: dur, ease: "power3.inOut" }, t); }
+function click(cur, ring, x, y, t, d = 0.6) {
+  tl.to(cur, { scale: 0.82, duration: 0.09, yoyo: true, repeat: 1, ease: "power1.inOut" }, t);
+  tl.set(ring, { x, y }, t);
+  tl.fromTo(ring, { scale: 0.2, opacity: 1 }, { scale: 1.6, opacity: 0, duration: d, ease: "power2.out" }, t);
+}
+
+tl.fromTo("#stage", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(80% at 50% 50%)", duration: 1.4, ease: "expo.inOut" }, 0);
+tl.fromTo("#fl-ring", { scale: 0, opacity: 1 }, { scale: 2.6, opacity: 1, duration: 0.9, ease: "expo.in" }, 0);
+tl.to("#fl-ring", { scale: 3.2, opacity: 0, duration: 0.5, ease: "power2.out" }, 0.9);
+hud(6, 14);
+
+// phase A: the rewind ring spins backwards
+tl.set("#plate", { transformOrigin: "1506px 554px" }, 0);
+tl.fromTo("#plate", { rotation: 20, x: 0 }, { rotation: -40, x: -20, duration: 3.6, ease: "power2.inOut" }, 0);
+particles(22, 66);
+eyebrow("#rb-eye", 0.6);
+lines("#rb-h", 0.8, 0.16);
+blurIn("#rb-sub", 1.6, 1.0);
+// phase B: punch through the ring into the product
+tl.to("#plate", { scale: 3.2, opacity: 0.25, duration: 0.9, ease: "expo.in" }, 3.6);
+tl.fromTo("#rb-flash", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.in" }, 4.05);
+tl.to("#rb-flash", { opacity: 0, duration: 0.7, ease: "power2.out" }, 4.4);
+tl.to("#rb-left", { x: -30, opacity: 0.9, duration: 0.6 }, 3.6);
+tl.fromTo("#rb-panel", { opacity: 0, scale: 0.6, rotateY: -30, z: -400 }, { opacity: 1, scale: 1, rotateY: 0, z: 0, duration: 1.3, ease: "expo.out" }, 4.2);
+[0, 1, 2].forEach((k) => tl.fromTo("#rb-r" + k, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" }, 4.7 + k * 0.12));
+// select rows, roll back all
+tl.set("#rb-cur", { x: 700, y: 760 }, 0);
+move("#rb-cur", 52, 284, 5.4, 0.8);
+[0, 1, 2].forEach((k) => { tl.to("#rb-cur", { y: 284 + k * 104, duration: 0.25, ease: "power2.inOut" }, 6.2 + k * 0.3); click("#rb-cur", "#rb-ring", 52, 284 + k * 104, 6.42 + k * 0.3, 0.26); tl.fromTo("#rb-k" + k, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.2 }, 6.44 + k * 0.3); });
+move("#rb-cur", 975, 70, 7.3, 0.6);
+click("#rb-cur", "#rb-ring", 975, 70, 7.9, 0.5);
+tl.fromTo("#rb-modal", { opacity: 0, scale: 0.92, y: 20 }, { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, 8.0);
+move("#rb-cur", 728, 344, 8.2, 0.45);
+click("#rb-cur", "#rb-ring", 728, 344, 8.7, 0.5);
+tl.to("#rb-modal", { opacity: 0, scale: 0.96, duration: 0.25 }, 8.8);
+[0, 1, 2].forEach((k) => {
+  const t = 9.0 + k * 0.28;
+  tl.fromTo("#rb-a" + k, { opacity: 1, x: 0, filter: "blur(0px)" }, { opacity: 0, x: -40, filter: "blur(6px)", duration: 0.3, ease: "power2.in" }, t);
+  tl.fromTo("#rb-b" + k, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, t + 0.2);
+  tl.to("#rb-s" + k, { opacity: 0, duration: 0.2 }, t + 0.1);
+  tl.fromTo("#rb-t" + k, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.5)" }, t + 0.2);
+  tl.fromTo("#rb-r" + k, { backgroundColor: "rgba(16,185,129,0)" }, { backgroundColor: "rgba(16,185,129,0.12)", duration: 0.25, yoyo: true, repeat: 1 }, t);
+});
+tl.fromTo("#rb-foot", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 9.9);
+tl.to("#rb-cur", { opacity: 0, duration: 0.3 }, 10.0);
+outro();
+
+window.__timelines = window.__timelines || {};
+window.__timelines["s06-rollback"] = tl;
+</script>
+</template>
