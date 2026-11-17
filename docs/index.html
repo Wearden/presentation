@@ -9,10 +9,13 @@
   #hud b{display:inline-block;padding:4px 10px;border:1px solid #2a3a33;border-radius:999px;background:#08100d}
   #hint{position:fixed;left:18px;bottom:14px;font:500 13px system-ui;color:#9fb0a7;opacity:.0;transition:opacity .4s;z-index:5}
   body:hover #hint{opacity:.6}
+  #start{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(8,16,13,.55);backdrop-filter:blur(3px);cursor:pointer}
+  #start span{padding:14px 26px;border-radius:999px;background:#f7faf8;color:#08100d;font:700 18px system-ui,sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.35)}
 </style></head>
 <body>
 <hyperframes-player id="p" src="composition/index.html"></hyperframes-player>
 <div id="hint">Space / → next · ← back · F fullscreen · Home / End</div>
+<div id="start" role="button" tabindex="0"><span>Başlamaq üçün klik et · tam ekran</span></div>
 <div id="hud"><b id="ctr">1 / 11</b></div>
 <script>
   const STARTS = [0,9,19,29,41,52,64,74,83,92,102,113,124,133];
@@ -42,11 +45,24 @@
     if (mode === "playing" && target != null && p.currentTime >= target - 0.02) holdAt(target);
     requestAnimationFrame(tick);
   }
-  p.addEventListener("ready", () => { if (ready) return; ready = true; enter(0); });
+  // The first click or key press goes full screen (browsers only allow that after a user action) and starts the deck.
+  let started = false, entered = false;
+  const go = () => { if (ready && started && !entered) { entered = true; enter(0); } };
+  const begin = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    started = true;
+    document.getElementById("start")?.remove();
+    const fs = document.documentElement.requestFullscreen?.();
+    if (fs && fs.catch) fs.catch(() => {});
+    go();
+  };
+  document.getElementById("start").addEventListener("click", begin);
+  p.addEventListener("ready", () => { if (ready) return; ready = true; go(); });
   requestAnimationFrame(tick);
-  setTimeout(() => { if (!ready && p.ready) { ready = true; enter(0); } }, 4000);
+  setTimeout(() => { if (!ready && p.ready) { ready = true; go(); } }, 4000);
 
   addEventListener("keydown", (e) => {
+    if (!started) { begin(e); return; }
     if (["ArrowRight", "ArrowDown", " ", "PageDown", "Enter"].includes(e.key)) { e.preventDefault(); next(); }
     else if (["ArrowLeft", "ArrowUp", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); prev(); }
     else if (e.key === "Home") goto(0, false);
